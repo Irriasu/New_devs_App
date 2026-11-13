@@ -10,13 +10,17 @@ const PROPERTIES = [
   { id: 'prop-004',tenant_id:'tenant-b', name: 'Lakeside Cottage' },
   { id: 'prop-005',tenant_id:'tenant-b', name: 'Urban Loft Modern' }
 ];
-
+const DEFAULT_MONTH = '2024-03';
 
 const Dashboard: React.FC = () => {
   const{user} = useAuth();
   const tenantProperties = PROPERTIES.filter((p) => p.tenant_id === user?.tenant_id);
   const [selectedProperty, setSelectedProperty] = useState(tenantProperties[0]?.id ?? '');
 
+  const [selectedMonth, setSelectedMonth] = useState(DEFAULT_MONTH);
+  const [yearStr, monthStr] = selectedMonth.split('-');
+  const year = Number(yearStr);
+  const month = Number(monthStr);
 
   return (
     <div className="p-4 lg:p-6 min-h-full">
@@ -33,6 +37,22 @@ const Dashboard: React.FC = () => {
                 </p>
               </div>
               
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                  {/* Month Selector */}
+                  <div className="flex flex-col sm:items-end">
+                    <label htmlFor="month-select" className="text-xs font-medium text-gray-700 mb-1">
+                      Select Month
+                    </label>
+                    <input
+                      id="month-select"
+                      type="month"
+                      value={selectedMonth}
+                      onChange={(e) => e.target.value && setSelectedMonth(e.target.value)}
+                      className="block w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
+                    />
+                  </div>
+
               {/* Property Selector */}
               <div className="flex flex-col sm:items-end">
                 <label className="text-xs font-medium text-gray-700 mb-1">Select Property</label>
@@ -50,13 +70,17 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
           </div>
+          </div>
+          
 
           <div className="space-y-6">
-            <RevenueSummary propertyId={selectedProperty} />
+            <RevenueSummary propertyId={selectedProperty} month={month} year={year} />
           </div>
         </div>
       </div>
     </div>
+    
+  
   );
 };
 
